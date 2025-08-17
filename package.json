@@ -1,0 +1,17 @@
+{
+  "name": "{{ THEME_SLUG }}",
+  "version": "1.0.0",
+  "description": "Custom WordPress theme built with modern development tools and structure.",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "build": "powershell -ExecutionPolicy Bypass -File build/build-theme.ps1",
+    "lint": "vendor/bin/phpcs -p src",
+    "fix": "vendor/bin/phpcbf src"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": true
+}

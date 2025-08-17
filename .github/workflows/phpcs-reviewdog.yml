@@ -1,0 +1,33 @@
+name: PHPCS Reviewdog
+
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.php'
+
+jobs:
+  phpcs:
+    name: Run PHPCS with Reviewdog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: Run PHPCS with Reviewdog
+        uses: reviewdog/action-phpcs@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          level: error
+          fail_on_error: true
+          path: src
+          standard: .phpcs.xml

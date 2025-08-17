@@ -1,0 +1,40 @@
+{
+    "name": "rich/wordpress-theme-boilerplate",
+    "description": "A boilerplate for new wordpress themes",
+    "type": "project",
+    "scripts": {
+    "lint": "vendor\\bin\\phpcs wp-content\\themes\\my-theme",
+    "lint:fix": "vendor\\bin\\phpcbf wp-content\\themes\\my-theme",
+    "authors": [
+        {
+            "name": "Rich Howell"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.13",
+        "wp-coding-standards/wpcs": "^3.1"
+    },
+      "scripts": {
+        "lint": "vendor\\bin\\phpcs",
+        "fix": "phpcbf -d memory_limit=2048M --standard=WordPress-Extra .",
+        "post-install-cmd": "mkdir -p stubs && copy vendor/php-stubs/wordpress-stubs/wordpress-stubs.php stubs/wordpress.php"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }    
+},
+    "require-dev": {
+        "phpcsstandards/phpcsutils": "^1.1",
+        "wp-coding-standards/wpcs": "^3.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.1",
+        "php-stubs/wordpress-stubs": "^6.8",
+        "squizlabs/php_codesniffer": "^3.13"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

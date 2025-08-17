@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fix PHP in src/ with phpcbf",
+      "type": "shell",
+      "command": "vendor/bin/phpcbf.bat",
+      "args": [
+        "-d",
+        "memory_limit=2048M",
+        "src"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ]
+}

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rich On Rails - Railway Photography</title>
+    <meta
+      name="description"
+      content="A clean, Instagram-like HTML and CSS template for a social feed UI."
+    />
+
+    <!--
+    SnapFeed Template
+    Pure HTML + CSS. No frameworks, no JS. Fully responsive.
+    Inspired by the general layout patterns of modern social apps.
+    This is NOT affiliated with or a copy of Instagram. No trademarks used.
+  -->
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Symbol sprites so we can reuse icons cleanly -->
+    <svg class="visually-hidden" aria-hidden="true" focusable="false">
+      <symbol id="icon-home" viewBox="0 0 24 24">
+        <path
+          d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"
+          fill="currentColor"
+          fill="none"
+          stroke-width="2"
+        />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path
+          d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zm10.3 16.9-4.6-4.6"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path
+          d="M12 5v14M5 12h14"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path
+          d="M20.8 5.7a5.4 5.4 0 0 0-7.7 0l-1.1 1.1-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7l1.1 1.1L12 22l7.7-7.6 1.1-1.1a5.4 5.4 0 0 0 0-7.7z"
+          fill="currentColor"
+          fill="none"
+          stroke-width="2"
+        />
+      </symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24">
+        <path d="M22 2 11 13" stroke="currentColor" stroke-width="2" />
+        <path d="M22 2 15 22l-4-9-9-4 20-7z" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-bookmark" viewBox="0 0 24 24">
+        <path
+          d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"
+          fill="currentColor"
+          fill="none"
+          stroke-width="2"
+        />
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <path
+          d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm8 9a8 8 0 1 0-16 0"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2"
+        />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path
+          d="M4 6h16M4 12h16M4 18h16"
+          stroke="currentColor"
+          fill="none"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </symbol>
+    </svg>
+
+    <!-- Top Bar -->
+    <header class="topbar" role="banner">
+      <div class="topbar-inner">
+        <div class="brand" aria-label="SnapFeed home">
+          <div class="logo" aria-hidden="true"></div>
+
+          <input
+            id="nav-toggle"
+            class="nav-toggle"
+            type="checkbox"
+            aria-label="Toggle menu"
+          />
+          <label for="nav-toggle" class="hamburger" aria-label="Open menu">
+            <svg aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </label>
+          <div class="mobile-menu" role="dialog" aria-label="Mobile menu">
+            <label class="search" aria-label="Search in menu">
+              <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+              <input type="search" name="q" placeholder="Search" />
+            </label>
+            <nav aria-label="Mobile navigation">
+              <a href="#"
+                ><svg aria-hidden="true"><use href="#icon-home"></use></svg
+                ><span>Home</span></a
+              >
+              <a href="#"
+                ><svg aria-hidden="true"><use href="#icon-search"></use></svg
+                ><span>Search</span></a
+              >
+              <a href="profile.html"
+                ><svg aria-hidden="true"><use href="#icon-user"></use></svg
+                ><span>Profile</span></a
+              >
+            </nav>
+          </div>
+
+          <h1>ROR Photos</h1>
+        </div>
+
+        <label class="search" aria-label="Search">
+          <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+          <input type="search" name="q" placeholder="Search" />
+        </label>
+
+        <div class="actions" role="toolbar" aria-label="Quick actions"></div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="layout" id="main" role="main">
+      <!-- Sidebar -->
+      <aside class="sidebar" aria-label="Primary navigation">
+        <nav class="nav">
+          <a class="active" href="<?php echo esc_url( home_url( '/' ) ); ?>"
+            ><svg aria-hidden="true"><use href="#icon-home"></use></svg
+            ><span class="label">Home</span></a
+          >
+          <a href="search.html"
+            ><svg aria-hidden="true"><use href="#icon-search"></use></svg
+            ><span class="label">Search</span></a
+          >
+          <a href="profile.html"
+            ><svg aria-hidden="true"><use href="#icon-user"></use></svg
+            ><span class="label">Profile</span></a
+          >
+        </nav>
+      </aside>
+
+      <!-- Feed -->
+      <section class="feed" aria-label="Feed">
+        <!-- Post 1 -->
+        <article class="post" aria-label="Post by rich">
+          <header class="post-header">
+            <div class="ph-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=200&auto=format&fit=crop"
+                alt="ava.codes avatar"
+              />
+            </div>
+            <div class="meta">
+              <div class="user">rich</div>
+              <span class="time">2h ago</span>
+            </div>
+          </header>
+          <div class="post-media">
+            <img
+              src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1280&auto=format&fit=crop"
+              alt="Code editor on a desk"
+            />
+          </div>
+          <div class="post-actions">
+            <div class="left-actions">
+              <a href="#" class="icon-btn" aria-label="Like"
+                ><svg><use href="#icon-heart"></use></svg
+              ></a>
+              <a href="#" class="icon-btn" aria-label="Comment"
+                ><svg><use href="#icon-menu"></use></svg
+              ></a>
+            </div>
+          </div>
+          <div class="post-body">
+            <div class="likes">2,184 likes</div>
+            <div class="caption">
+              <span class="user">rich</span>New setup day. Coffee, keys, and
+              clean commits.
+            </div>
+            <a class="comments" href="#">View 24 comments</a>
+          </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="post" aria-label="Post by rich">
+          <header class="post-header">
+            <div class="ph-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=200&auto=format&fit=crop"
+                alt="luna.design avatar"
+              />
+            </div>
+            <div class="meta">
+              <div class="user">rich</div>
+              <span class="time">4h ago</span>
+            </div>
+          </header>
+          <div class="post-media">
+            <img
+              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1280&auto=format&fit=crop"
+              alt="Misty mountains at sunrise"
+            />
+          </div>
+          <div class="post-actions">
+            <div class="left-actions">
+              <a href="#" class="icon-btn" aria-label="Like"
+                ><svg><use href="#icon-heart"></use></svg
+              ></a>
+              <a href="#" class="icon-btn" aria-label="Comment"
+                ><svg><use href="#icon-menu"></use></svg
+              ></a>
+            </div>
+          </div>
+          <div class="post-body">
+            <div class="likes">803 likes</div>
+            <div class="caption">
+              <span class="user">luna.design</span>I can hear the fresh air from
+              here.
+            </div>
+            <a class="comments" href="#">View 12 comments</a>
+          </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="post" aria-label="Post by rich">
+          <header class="post-header">
+            <div class="ph-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop"
+                alt="kai.photo avatar"
+              />
+            </div>
+            <div class="meta">
+              <div class="user">rich</div>
+              <span class="time">1d ago</span>
+            </div>
+          </header>
+          <div class="post-media">
+            <img
+              src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1280&auto=format&fit=crop"
+              alt="Circuit board macro"
+            />
+          </div>
+          <div class="post-actions">
+            <div class="left-actions">
+              <a href="#" class="icon-btn" aria-label="Like"
+                ><svg><use href="#icon-heart"></use></svg
+              ></a>
+              <a href="#" class="icon-btn" aria-label="Comment"
+                ><svg><use href="#icon-menu"></use></svg
+              ></a>
+            </div>
+          </div>
+          <div class="post-body">
+            <div class="likes">5,102 likes</div>
+            <div class="caption">
+              <span class="user">rich</span>Tiny cities under glass.
+            </div>
+            <a class="comments" href="#">View 87 comments</a>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+
+    <footer class="footer" aria-label="Footer">
+      <span>Rich On Rails</span>
+    </footer>
+
+    <footer class="tabbar" role="navigation" aria-label="Mobile navigation">
+      <nav>
+        <a href="#" aria-label="Home"
+          ><svg><use href="#icon-home"></use></svg
+        ></a>
+        <a href="#" aria-label="Search"
+          ><svg><use href="#icon-search"></use></svg
+        ></a>
+        <a href="#" aria-label="Create"
+          ><svg><use href="#icon-plus"></use></svg
+        ></a>
+        <a href="#" aria-label="Notifications"
+          ><svg><use href="#icon-heart"></use></svg
+        ></a>
+        <a href="#" aria-label="Profile"
+          ><svg><use href="#icon-user"></use></svg
+        ></a>
+      </nav>
+    </footer>
+
+    <!-- Media Modal -->
+    <div
+      class="modal"
+      id="mediaModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mediaTitle"
+      aria-hidden="true"
+    >
+      <div class="dialog">
+        <button class="close" aria-label="Close">&times;</button>
+        <div class="left">
+          <img id="modalImage" alt="Expanded media" />
+        </div>
+        <aside class="right">
+          <header class="head">
+            <div class="avatar"><img id="modalAvatar" alt="" /></div>
+            <div class="who">
+              <div class="user" id="modalUser">user.name</div>
+              <div class="time" id="modalTime">now</div>
+            </div>
+          </header>
+          <section class="comments" id="modalComments" aria-label="Comments">
+            <!-- Filled dynamically -->
+          </section>
+          <footer class="footer">
+            <div class="actions">
+              <button class="icon-btn" aria-label="Like">
+                <svg><use href="#icon-heart"></use></svg>
+              </button>
+              <button class="icon-btn" aria-label="Comment">
+                <svg><use href="#icon-menu"></use></svg>
+              </button>
+            </div>
+            <button class="btn primary">Post</button>
+          </footer>
+        </aside>
+      </div>
+    </div>
+    <script>
+      (function () {
+        const modal = document.getElementById("mediaModal");
+        const imgEl = document.getElementById("modalImage");
+        const leftPane = document.querySelector("#mediaModal .left");
+        function setMediaSrc(src, alt) {
+          imgEl.classList.remove("ready");
+          imgEl.alt = alt || "media";
+          imgEl.src = src; // set directly on the visible img
+          leftPane.style.backgroundImage =
+            "url(" + JSON.stringify(src).slice(1, -1) + ")"; // fallback paint
+          leftPane.style.backgroundSize = "contain";
+          leftPane.style.backgroundPosition = "center";
+          leftPane.style.backgroundRepeat = "no-repeat";
+        }
+
+        const avatar = document.getElementById("modalAvatar");
+        const user = document.getElementById("modalUser");
+        const time = document.getElementById("modalTime");
+        const comments = document.getElementById("modalComments");
+        const closeBtn = modal.querySelector(".close");
+        let currentList = [];
+        let currentIndex = 0;
+
+        function collectSiblings(startEl) {
+          // collects images in the same grid/feed section
+          const container = startEl.closest(".grid, .feed") || document;
+          const nodes = Array.from(
+            container.querySelectorAll(".post-media img, .tile img")
+          );
+          return nodes;
+        }
+
+        function getMeta(img) {
+          // Try to pull meta from surrounding post
+          const post = img.closest(".post");
+          if (post) {
+            const u =
+              post.querySelector(".post-header .user")?.textContent?.trim() ||
+              "user";
+            const t =
+              post.querySelector(".post-header .time")?.textContent?.trim() ||
+              "";
+            const a =
+              post.querySelector(".post-header img")?.getAttribute("src") || "";
+            const caption =
+              post.querySelector(".caption")?.textContent?.trim() ||
+              img.alt ||
+              "";
+            return { user: u, time: t, avatar: a, caption };
+          }
+          // Grid tile
+          const tile = img.closest(".tile");
+          const u =
+            document.querySelector(".username")?.textContent?.trim() || "user";
+          const a =
+            document.querySelector(".avatar img")?.getAttribute("src") || "";
+          const caption = img.getAttribute("alt") || "";
+          return { user: u, time: "", avatar: a, caption };
+        }
+
+        function setComments(text) {
+          comments.innerHTML = "";
+          if (text) {
+            const block = document.createElement("div");
+            block.className = "comment";
+            block.innerHTML =
+              '<div class="who">' +
+              user.textContent +
+              "</div><div>" +
+              text +
+              "</div>";
+            comments.appendChild(block);
+          } else {
+            const empty = document.createElement("div");
+            empty.className = "comment";
+            empty.textContent = "No comments yet. Start the conversation.";
+            comments.appendChild(empty);
+          }
+        }
+
+        function openAt(idx) {
+          currentIndex = idx;
+          const media = currentList[currentIndex];
+          const meta = getMeta(media);
+          imgEl.src = media.src;
+          user.textContent = meta.user;
+          time.textContent = meta.time;
+          if (meta.avatar) {
+            avatar.src = meta.avatar;
+            avatar.alt = meta.user + " avatar";
+          }
+          setComments(meta.caption);
+          modal.classList.add("open");
+          document.body.classList.add("no-scroll");
+          modal.setAttribute("aria-hidden", "false");
+          media.focus?.();
+        }
+
+        function close() {
+          modal.classList.remove("open");
+          document.body.classList.remove("no-scroll");
+          modal.setAttribute("aria-hidden", "true");
+        }
+
+        // Click-to-open (event delegation)
+        document.addEventListener("click", function (e) {
+          const target = e.target;
+          if (target.matches(".post-media img, .tile img")) {
+            currentList = collectSiblings(target);
+            const idx = currentList.indexOf(target);
+            openAt(idx);
+            e.preventDefault();
+          }
+          if (target === modal) close();
+          if (target === closeBtn) close();
+        });
+
+        // Keyboard
+        document.addEventListener("keydown", function (e) {
+          if (!modal.classList.contains("open")) return;
+          if (e.key === "Escape") close();
+        });
+      })();
+    </script>
+  </body>
+</html>

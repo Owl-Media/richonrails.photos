@@ -1,0 +1,51 @@
+name: Build and Release Theme
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Get version tag
+        id: vars
+        run: echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Zip the theme
+        run: |
+          mkdir dist
+          zip -r "dist/theme-${{ steps.vars.outputs.tag_name }}.zip" src
+
+      - name: Read release notes
+        id: notes
+        run: |
+          FILE="release-notes/${{ steps.vars.outputs.tag_name }}.md"
+          if [ -f "$FILE" ]; then
+            CONTENT=$(cat "$FILE")
+            echo "release_body<<EOF" >> $GITHUB_OUTPUT
+            echo "$CONTENT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "release_body=No release notes provided." >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag_name }}
+          name: Release ${{ steps.vars.outputs.tag_name }}
+          body: ${{ steps.notes.outputs.release_body }}
+          files: dist/theme-${{ steps.vars.outputs.tag_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

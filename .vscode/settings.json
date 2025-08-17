@@ -1,0 +1,12 @@
+{
+  "[php]": {
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
+  },
+  "phpcs.enable": true,
+  "phpcs.executablePath": "vendor/bin/phpcs.bat",
+  "phpcs.standard": ".phpcs.xml",
+  "intelephense.environment.includePaths": [
+    "stubs"
+  ]
+}
