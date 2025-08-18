@@ -13,21 +13,49 @@
 	<article class="card media-view" aria-label="Post by luna.design">
 		<div class="media-left">
 			<?php
-				$rows = get_field( 'image_repeater' );
-			if ( ! empty( $rows ) && is_array( $rows ) ) {
-				foreach ( $rows as $row ) {
-					$perm = get_permalink();
-					$url  = isset( $row['image'] ) ? $row['image'] : '';
-					if ( $url ) {
-						printf(
-							'<a href="%s"><img src="%s" alt="" loading="lazy" decoding="async"></a>',
-							esc_url( $perm ),
-							esc_url( $url )
-						);
-					}
+			$rows   = get_field( 'image_repeater' ) ?: array();
+			$images = array();
+
+			// Normalise to a flat array of URLs
+			foreach ( $rows as $row ) {
+				if ( ! empty( $row['image'] ) ) {
+					$images[] = esc_url( $row['image'] );
 				}
 			}
-			?>
+
+			$count = count( $images );
+			$perm  = get_permalink();
+			$pid   = get_the_ID(); // unique per post to avoid ID collisions
+
+			if ( $count === 1 ) :
+				?>
+	<a href="<?php echo esc_url( $perm ); ?>">
+		<img src="<?php echo $images[0]; ?>" alt="" loading="lazy" decoding="async">
+	</a>
+			<?php elseif ( $count > 1 ) : ?>
+	<div class="rr-slider" id="rr-slider-<?php echo (int) $pid; ?>" data-slider>
+		<div class="rr-slider__track" role="group" aria-roledescription="carousel" aria-label="Post images">
+			<ul class="rr-slider__list" data-slider-list>
+					<?php foreach ( $images as $i => $url ) : ?>
+					<li class="rr-slider__slide" data-slide aria-roledescription="slide" aria-label="<?php echo ( $i + 1 ) . ' of ' . $count; ?>">
+						<a href="<?php echo esc_url( $perm ); ?>">
+							<img src="<?php echo $url; ?>" alt="" loading="lazy" decoding="async">
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+
+		<button class="rr-slider__btn rr-slider__btn--prev" type="button" data-prev aria-label="Previous image">❮</button>
+		<button class="rr-slider__btn rr-slider__btn--next" type="button" data-next aria-label="Next image">❯</button>
+
+		<div class="rr-slider__dots" data-dots aria-hidden="true">
+				<?php for ( $i = 0; $i < $count; $i++ ) : ?>
+				<button type="button" class="rr-slider__dot" data-dot="<?php echo $i; ?>"></button>
+			<?php endfor; ?>
+		</div>
+	</div>
+	<?php endif; ?>
 		</div>
 
 		<aside class="media-right">

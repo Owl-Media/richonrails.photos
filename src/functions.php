@@ -13,6 +13,8 @@ add_action( 'after_setup_theme', 'mytheme_setup' );
 
 /**
  * Enqueue styles
+ *
+ * @since 1.0.0
  */
 function mytheme_enqueue_assets() {
 	// Use stylesheet_* so it works for child themes too
@@ -30,6 +32,24 @@ function mytheme_enqueue_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_assets' );
+
+/**
+ * Enqueue scripts
+ *
+ * @since 1.0.0
+ */
+
+function richonrails_enqueue_slider_assets() {
+	// JS
+	wp_enqueue_script(
+		'rr-slider',
+		get_template_directory_uri() . '/assets/js/slider.js',
+		array(),
+		filemtime( get_template_directory() . '/assets/js/slider.js' ),
+		true // load in footer
+	);
+}
+add_action( 'wp_enqueue_scripts', 'richonrails_enqueue_slider_assets' );
 
 /**
  * Disable the Gutenberg editor
