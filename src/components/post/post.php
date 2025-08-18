@@ -52,9 +52,9 @@
 		<div class="rr-slider__track" role="group" aria-roledescription="carousel" aria-label="Post images">
 			<ul class="rr-slider__list" data-slider-list>
 					<?php foreach ( $images as $i => $url ) : ?>
-					<li class="rr-slider__slide" data-slide aria-roledescription="slide" aria-label="<?php echo ( $i + 1 ) . ' of ' . $count; ?>">
+					<li class="rr-slider__slide" data-slide aria-roledescription="slide" aria-label="<?php echo (int) ( $i + 1 ) . ' of ' . (int) $count; ?>">
 						<a href="<?php echo esc_url( $perm ); ?>">
-							<img src="<?php echo $url; ?>" alt="" loading="lazy" decoding="async">
+							<img src="<?php echo esc_url( $url ); ?>" alt="" loading="lazy" decoding="async">
 						</a>
 					</li>
 				<?php endforeach; ?>
@@ -66,7 +66,7 @@
 
 		<div class="rr-slider__dots" data-dots aria-hidden="true">
 				<?php for ( $i = 0; $i < $count; $i++ ) : ?>
-				<button type="button" class="rr-slider__dot" data-dot="<?php echo $i; ?>"></button>
+				<button type="button" class="rr-slider__dot" data-dot="<?php echo (int) $i; ?>"></button>
 			<?php endfor; ?>
 		</div>
 	</div>
@@ -80,16 +80,16 @@
 				echo hl_render_like_button( get_the_ID(), array( 'show_count' => false ) );
 			}
 			?>
-					</div>
-	</div>
-	<div class="post-body">
-		<div class="likes">
+			<div class="likes">
 		<?php
 		if ( function_exists( 'hl_the_like_count' ) ) {
 			hl_the_like_count( get_the_ID() );
 		}
 		?>
 		</div>
+		</div>
+	</div>
+	<div class="post-body">		
 		<div class="caption">
 			<?php the_content(); ?>
 		</div>
