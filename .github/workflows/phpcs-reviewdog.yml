@@ -30,4 +30,4 @@ jobs:
           level: error
           fail_on_error: true
           path: src
-          standard: .phpcs.xml
+          standard: phpcs.xml
