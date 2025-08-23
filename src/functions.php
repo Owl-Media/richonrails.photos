@@ -234,3 +234,168 @@ function post_time_ago( $post_id = null ) {
 	$d = floor( $delta / DAY_IN_SECONDS );
 	return $d . ' day' . ( $d > 1 ? 's' : '' ) . ' ago';
 }
+
+// Only include specific CPTs in the main site feed (exclude default 'post')
+add_action(
+	'pre_get_posts',
+	function ( WP_Query $q ) {
+		if ( $q->is_main_query() && $q->is_feed() && ! is_admin() ) {
+			$q->set( 'post_type', array( 'photo' ) ); // <-- your CPT slug(s)
+			// Optionally control ordering:
+			// $q->set( 'orderby', 'date' );
+			// $q->set( 'order', 'DESC' );
+		}
+	}
+);
+
+
+/**
+ * 1) Append repeater images to feed body (content:encoded) with a "+N more" notice
+ */
+add_filter(
+	'the_content_feed',
+	function ( $content ) {
+		if ( ! is_feed() ) {
+			return $content;
+		}
+
+		$rows = get_field( 'image_repeater' );
+		if ( is_array( $rows ) && ! empty( $rows ) ) {
+			$max_images = 12; // <-- adjust your inline gallery limit
+			$count      = 0;
+
+			// Count only rows that have an image URL
+			$total_images = 0;
+			foreach ( $rows as $row ) {
+				if ( ! empty( $row['image'] ) ) {
+					$total_images++;
+				}
+			}
+
+			$html  = "\n\n<!-- Begin: Repeater Images -->\n";
+			$html .= "<div class=\"feed-gallery\">\n";
+
+			foreach ( $rows as $row ) {
+				if ( $count >= $max_images ) {
+					break;
+				}
+				$url = isset( $row['image'] ) ? $row['image'] : '';
+				if ( $url ) {
+					$html .= sprintf(
+						'<p><a href="%s"><img src="%s" alt="" loading="lazy" decoding="async" /></a></p>' . "\n",
+						esc_url( get_permalink() ),
+						esc_url( $url )
+					);
+					$count++;
+				}
+			}
+
+			$html .= "</div>\n";
+
+			// If there are more images than we showed, add a "+N more" hint with a link
+			$remaining = max( 0, $total_images - $max_images );
+			if ( $remaining > 0 ) {
+				$html .= sprintf(
+					'<p><a href="%s">+%s more image%s</a></p>' . "\n",
+					esc_url( get_permalink() ),
+					esc_html( $remaining ),
+					$remaining === 1 ? '' : 's'
+				);
+			}
+
+			$html .= "<!-- End: Repeater Images -->\n";
+
+			$content .= $html;
+		}
+
+		return $content;
+	},
+	10,
+	1
+);
+
+
+/**
+ * 2) Add Media RSS namespace and media:content per image
+ *    with MIME type and (if available) width/height
+ */
+add_action(
+	'rss2_ns',
+	function () {
+		echo ' xmlns:media="http://search.yahoo.com/mrss/"';
+	}
+);
+
+add_action(
+	'rss2_item',
+	function () {
+		$max_images = 12; // <-- keep or change the machine-readable limit too
+		$count      = 0;
+
+		// Optional: featured image as media:thumbnail
+		if ( has_post_thumbnail() ) {
+			$src = wp_get_attachment_image_src( get_post_thumbnail_id(), 'large' );
+			if ( $src && ! empty( $src[0] ) ) {
+				printf( "<media:thumbnail url=\"%s\" />\n", esc_url( $src[0] ) );
+			}
+		}
+
+		// Repeater images as media:content with type and optional dimensions
+		$rows = get_field( 'image_repeater' );
+		if ( is_array( $rows ) && ! empty( $rows ) ) {
+			foreach ( $rows as $row ) {
+				if ( $count >= $max_images ) {
+					break;
+				}
+
+				$url = isset( $row['image'] ) ? $row['image'] : '';
+				if ( ! $url ) {
+					continue;
+				}
+
+				// MIME type from file extension
+				$filetype = wp_check_filetype( $url );
+				$mime     = ! empty( $filetype['type'] ) ? $filetype['type'] : null;
+
+				// Try to fetch width/height if this URL maps to a Media Library item
+				$width  = null;
+				$height = null;
+				$att_id = attachment_url_to_postid( $url );
+				if ( $att_id ) {
+					$meta = wp_get_attachment_metadata( $att_id );
+					if ( is_array( $meta ) ) {
+						if ( ! empty( $meta['width'] ) && ! empty( $meta['height'] ) ) {
+							$width  = (int) $meta['width'];
+							$height = (int) $meta['height'];
+						} elseif ( ! empty( $meta['sizes']['full']['width'] ) && ! empty( $meta['sizes']['full']['height'] ) ) {
+							$width  = (int) $meta['sizes']['full']['width'];
+							$height = (int) $meta['sizes']['full']['height'];
+						}
+					}
+				}
+
+				// Build attributes safely
+				$attrs = array(
+					'url'    => esc_url( $url ),
+					'medium' => 'image',
+				);
+				if ( $mime ) {
+					$attrs['type'] = esc_attr( $mime );
+				}
+				if ( $width && $height ) {
+					$attrs['width']  = (string) $width;
+					$attrs['height'] = (string) $height;
+				}
+
+				// Emit <media:content ... />
+				$attr_str = '';
+				foreach ( $attrs as $k => $v ) {
+					$attr_str .= sprintf( ' %s="%s"', $k, $v );
+				}
+				echo "<media:content$attr_str />\n";
+
+				$count++;
+			}
+		}
+	}
+);
